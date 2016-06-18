@@ -22,18 +22,17 @@ public class AudVis2 extends PApplet {
 
 
 
-// Declare the processing sound variables 
 SoundFile sample;
 FFT fft;
 AudioDevice device;
 
-// Declare a scaling factor
+// Scaling factor
 int scale = 5;
 
-// Define how many FFT bands we want
+// Number of FFT bands
 int bands = 128;
-int bandsToDisplay = 15;
-// declare a drawing variable for calculating rect width
+int bandsToDisplay = 32;
+
 float rWidth;
 
 // Create a smoothing vector
@@ -50,7 +49,7 @@ public void setup() {
   // so we set Buffersize equal to bands
   device = new AudioDevice(this, 44000, bands);
 
-  // Calculate the width of the rects depending on how many bands we have
+  // Set width to fit all rectangles on screen
   rWidth = width/PApplet.parseFloat(bandsToDisplay);
 
   // Load and play a soundfile and loop it. This has to be called 
@@ -62,6 +61,7 @@ public void setup() {
   // Create and patch the FFT analyzer
   fft = new FFT(this, bands);
   fft.input(sample);
+  sample.play();
 }      
 
 public void draw() {
@@ -118,6 +118,11 @@ public float[] randomize(float[] anArray)
   }
   
   return anArray;
+}
+
+public void stop()
+{
+  sample.stop();
 }
   public void settings() {  size(640, 360); }
   static public void main(String[] passedArgs) {

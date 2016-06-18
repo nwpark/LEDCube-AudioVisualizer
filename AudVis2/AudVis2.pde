@@ -1,10 +1,8 @@
 import processing.sound.SoundFile;
 import processing.sound.FFT;
-import processing.sound.AudioDevice;
 
 SoundFile sample;
 FFT fft;
-AudioDevice device;
 
 // Scaling factor
 int scale = 5;
@@ -24,10 +22,6 @@ float smooth_factor = 0.2;
 void setup() {
   size(640, 360);
   background(255);
-
-  // If the Buffersize is larger than the FFT Size, the FFT will fail
-  // so we set Buffersize equal to bands
-  device = new AudioDevice(this, 44000, bands);
 
   // Set width to fit all rectangles on screen
   rWidth = width/float(bandsToDisplay);

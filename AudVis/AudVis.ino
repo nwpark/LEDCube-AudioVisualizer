@@ -16,10 +16,11 @@ void loop()
 {
   cube.wait(10);
 
-  // request update
-  Serial.println('A');
+  // request an update
+  Serial.println('R');
 }
 
+// process the update - method called when there is serial input
 void serialEvent()
 {
   Serial.readBytes(inBuffer, sizeof(inBuffer));
@@ -34,11 +35,12 @@ void serialEvent()
         if(inBuffer[i] > 7)
           inBuffer[i] = 7;
         int height = inBuffer[i];
-        while(height >= 0)
-        {
-          cube.light(x, y, height);
-          height--;
-        }
+        if(height > 0)
+          while(height >= 0)
+          {
+            cube.light(x, y, height);
+            height--;
+          }
       }
   }
 }
