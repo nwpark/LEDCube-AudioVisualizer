@@ -68,12 +68,12 @@ public class CubeArraySorter<ArrayType>
   //      distFromCenter[x][y].second = false;
         
   //  twoDPyramidArray = new Object[(int)sq(cubeSize)];
-    
+
   //  for(int i=0; i < twoDPyramidArray.length; i++)
   //    insertAtSmallest(anArray[i]);
-      
+
   //  nextSmallestDistance = (int)(cubeSize/2);
-      
+
   //  return (ArrayType[])twoDPyramidArray;
   //} // twoDPyramidSort
   
