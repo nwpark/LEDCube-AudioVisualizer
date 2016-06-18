@@ -1,10 +1,8 @@
-import ddf.minim.Minim;
-import ddf.minim.AudioPlayer;
-import ddf.minim.analysis.FFT;
+import processing.sound.SoundFile;
+import processing.sound.FFT;
 import processing.serial.*;
 
-private static Minim minim;
-private static AudioPlayer song;
+private static SoundFile song;
 private static FFT fft;
 
 private static Serial arduinoPort = null;
@@ -16,6 +14,7 @@ private static float[] spectrum, smoothSpectrum;
 private static byte[] outputArray;
 
 private static final int cubeSize = 8;
+private static final int bandsToAnalyse = 128;
 private static final int bandsToDisplay = 64;
 private static final float smoothFactor = 0.2;
 private static float rWidth;
@@ -34,19 +33,23 @@ void setup()
     { println("No serial port available at index 1"); }
   catch(NullPointerException e)
     { println("Failed to open serial port"); }
- 
-  minim = new Minim(this);
-  song = minim.loadFile("C:/Users/Nick/Downloads/music.mp3", 512);
-  song.play();
- 
-  fft = new FFT(song.bufferSize(), song.sampleRate());
   
   byteArraySorter = new CubeArraySorter<Byte>(cubeSize);
   floatArraySorter = new CubeArraySorter<Float>(cubeSize);
   
-  spectrum = smoothSpectrum = new float[bandsToDisplay];
+  spectrum = new float[bandsToDisplay];
+  smoothSpectrum = new float[bandsToDisplay];
   outputArray = new byte[bandsToDisplay];
   rWidth = width / float(bandsToDisplay);
+  
+  song = new SoundFile(this, "C:/Users/Nick/Downloads/music.mp3");
+  song.play();
+  song.jump(52);
+ 
+  fft = new FFT(this, bandsToAnalyse);
+  fft.input(song);
+  //song.play();
+  //song.jump(50);
 }
 
 void draw()
@@ -56,14 +59,16 @@ void draw()
   fill(-1, 10);
   noStroke();
 
-  fft.forward(song.mix);
-
-  int bandsToAverage = fft.specSize() / bandsToDisplay;
-  for(int i=0; i < bandsToDisplay; i++)
+  fft.analyze();
+  
+  //int j=0;
+  for(int i=0; i < 16; i++)
   {
-    for(int j=i*bandsToAverage; j < (i+1)*bandsToAverage; j++)
-      spectrum[i] += fft.getBand(j);
-    spectrum[i] /= (fft.specSize() / bandsToDisplay);
+    for(int j=i*4; j < (i+1)*4; j++)
+      spectrum[j] = fft.spectrum[i];
+    //spectrum[j+1] = fft.spectrum[i];
+    //spectrum[j+2] = fft.spectrum[i];
+    //spectrum[j+3] = fft.spectrum[i];
   }
 
   spectrum = floatArraySorter.twoDPyramidSort(sort(spectrum));
@@ -71,8 +76,9 @@ void draw()
   for(int i = 0; i < bandsToDisplay; i++)
   {
     smoothSpectrum[i] += (spectrum[i] - smoothSpectrum[i]) * smoothFactor;
-    outputArray[i] = (byte)map(smoothSpectrum[i], 0, 15, 0, 8);
-    rect(i*rWidth, height, rWidth, -outputArray[i]*50);
+    outputArray[i] = (byte)map(smoothSpectrum[i]*height*6, 0, height, 0, 7);
+    //rect(i*rWidth, height, rWidth, -outputArray[i]*height/7);
+    rect(i*rWidth, height, rWidth, -smoothSpectrum[i]*height*5);
   }
 }
 
@@ -90,4 +96,5 @@ void stop()
 {
   arduinoPort.clear();
   arduinoPort.stop();
+  song.stop();
 }

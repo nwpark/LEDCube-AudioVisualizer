@@ -48,7 +48,6 @@ void draw() {
   noStroke();
 
   fft.analyze();
-  //fft.spectrum = pyramidSort(reverse(sort(fft.spectrum)));
   fft.spectrum = pyramidSort(sort(fft.spectrum), bandsToDisplay - 1);
   for (int i = 0; i < fft.spectrum.length; i++)
   {
