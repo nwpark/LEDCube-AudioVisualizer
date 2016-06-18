@@ -43,35 +43,27 @@ void setup()
   rWidth = width / float(bandsToDisplay);
   
   song = new SoundFile(this, "C:/Users/Nick/Downloads/music.mp3");
+  song.cue(52);
   song.play();
-  song.jump(52);
  
   fft = new FFT(this, bandsToAnalyse);
   fft.input(song);
-  //song.play();
-  //song.jump(50);
+  song.play();
 }
 
 void draw()
 {
-  fill(#1A1F18, 70);
-  rect(0, 0, width, height);
-  fill(-1, 10);
-  noStroke();
+  fadeBands();
 
   fft.analyze();
   
-  //int j=0;
   for(int i=0; i < 16; i++)
   {
     for(int j=i*4; j < (i+1)*4; j++)
       spectrum[j] = fft.spectrum[i];
-    //spectrum[j+1] = fft.spectrum[i];
-    //spectrum[j+2] = fft.spectrum[i];
-    //spectrum[j+3] = fft.spectrum[i];
   }
 
-  spectrum = floatArraySorter.twoDPyramidSort(sort(spectrum));
+  spectrum = floatArraySorter.twoDPyramidSort(reverse(sort(spectrum)));
   
   for(int i = 0; i < bandsToDisplay; i++)
   {
@@ -90,6 +82,14 @@ void serialEvent(Serial arduinoPort)
   {
     arduinoPort.write(outputArray);
   }
+}
+
+private void fadeBands()
+{
+  fill(#1A1F18, 70);
+  rect(0, 0, width, height);
+  fill(-1, 10);
+  noStroke();
 }
 
 void stop()
