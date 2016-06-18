@@ -63,7 +63,7 @@ void draw()
       spectrum[j] = fft.spectrum[i];
   }
 
-  spectrum = floatArraySorter.twoDPyramidSort(reverse(sort(spectrum)));
+  spectrum = floatArraySorter.twoDPyramidSort(sort(spectrum));
   
   for(int i = 0; i < bandsToDisplay; i++)
   {
