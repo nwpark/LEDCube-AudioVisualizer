@@ -11,6 +11,7 @@ class CubeInterface
     void light(int x, int y, int z);
     void off(int x, int y, int z);
     void clearAll();
+    void reduceAlphaAll(byte factorToReduceBy);
     void writeCube();
     void wait(int t);
     void copyArray();

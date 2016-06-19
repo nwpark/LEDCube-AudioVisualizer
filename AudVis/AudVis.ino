@@ -8,7 +8,7 @@ byte pattern[8][8];
 void setup()
 {
   Serial.begin(250000);
-  for(int i=0; i < 64; i++)
+  for(byte i=0; i < 64; i++)
     inBuffer[i] = 0;
 }
 
@@ -27,14 +27,15 @@ void serialEvent()
   
   if(inBuffer != NULL)
   {
-    cube.clearAll();
-    int i=-1;
-    for(int x=0; x < 8; x++)
-      for(int y=0; y < 8; y++, i++)
+    //cube.clearAll();
+    cube.reduceAlphaAll(2);
+    byte i=-1;
+    for(byte x=0; x < 8; x++)
+      for(byte y=0; y < 8; y++, i++)
       {
         if(inBuffer[i] > 8)
           inBuffer[i] = 8;
-        int height = inBuffer[i];
+        byte height = inBuffer[i];
         while(height > 0)
         {
           cube.light(x, y, height-1);
