@@ -15,6 +15,7 @@ private static byte[] outputArray;
 private static ColumnDisplay nineColumnDisplay;
 private static ColumnDisplay fourColumnDisplay;
 private static ColumnDisplay sixtyfourColumnDisplay;
+private static PyramidDisplay pyramidDisplay;
 
 private static final int cubeSize = 8;
 private static final int bandsToAnalyse = 128;
@@ -22,8 +23,9 @@ private static final int bandsToDisplay = 64;
 private static final float smoothFactor = 0.2;
 private static float rWidth;
 
-private enum State { COLUMNS4, COLUMNS9, COLUMNS64 }
+private enum State { COLUMNS4, COLUMNS9, COLUMNS64, PYRAMID }
 private static State currentState;
+private static Display currentDisplay;
 
 void setup()
 {
@@ -58,43 +60,15 @@ void setup()
   init64ColumnDisplay();
   init9ColumnDisplay();
   init4ColumnDisplay();
+  pyramidDisplay = new PyramidDisplay(fft);
   
-  currentState = State.COLUMNS4;
+  currentState = State.PYRAMID;
+  currentDisplay = pyramidDisplay;
 }
 
 void draw()
-{
-  //fadeBands();
-
-  //fft.analyze();
-  
-  //for(int i=0; i < 16; i++)
-  //{
-  //  for(int j=i*4; j < (i+1)*4; j++)
-  //    spectrum[j] = fft.spectrum[i];
-  //}
-
-  //spectrum = floatArrayShuffler.twoDPyramidSort(sort(spectrum));
-  
-  //for(int i = 0; i < bandsToDisplay; i++)
-  //{
-  //  smoothSpectrum[i] += (spectrum[i] - smoothSpectrum[i]) * smoothFactor;
-  //  outputArray[i] = (byte)map(smoothSpectrum[i]*height*6, 0, height, 0, 7);
-  //  //rect(i*rWidth, height, rWidth, -outputArray[i]*height/7);
-  //  rect(i*rWidth, height, rWidth, -smoothSpectrum[i]*height*5);
-  //}
-  switch(currentState)
-  {
-    case COLUMNS4 :
-      fourColumnDisplay.update();
-      break;
-    case COLUMNS9 :
-      nineColumnDisplay.update();
-      break;
-    case COLUMNS64 :
-      sixtyfourColumnDisplay.update();
-      break;
-  }
+{ 
+  currentDisplay.update();
 }
 
 void serialEvent(Serial arduinoPort)
@@ -102,21 +76,7 @@ void serialEvent(Serial arduinoPort)
   String val = arduinoPort.readStringUntil('\n');
   
   if(trim(val) != null)
-  {
-    //arduinoPort.write(fourColumnDisplay.output());
-    switch(currentState)
-    {
-      case COLUMNS4 :
-        arduinoPort.write(fourColumnDisplay.output());
-        break;
-      case COLUMNS9 :
-        arduinoPort.write(nineColumnDisplay.output());
-        break;
-      case COLUMNS64 :
-        arduinoPort.write(sixtyfourColumnDisplay.output());
-        break;
-    }
-  }
+    arduinoPort.write(currentDisplay.output());
 }
 
 private void init64ColumnDisplay()

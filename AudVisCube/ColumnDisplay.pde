@@ -1,4 +1,4 @@
-public class ColumnDisplay
+public class ColumnDisplay implements Display
 {
   private FFT fft;
   
