@@ -7,8 +7,8 @@ private static FFT fft;
 
 private static Serial arduinoPort = null;
 
-private static CubeArraySorter<Byte> byteArraySorter;
-private static CubeArraySorter<Float> floatArraySorter;
+private static ArrayShuffler<Byte> byteArraySorter;
+private static ArrayShuffler<Float> floatArraySorter;
 
 private static float[] spectrum, smoothSpectrum;
 private static byte[] outputArray;
@@ -36,8 +36,8 @@ void setup()
   catch(NullPointerException e)
     { println("Failed to open serial port"); }
   
-  byteArraySorter = new CubeArraySorter<Byte>(cubeSize);
-  floatArraySorter = new CubeArraySorter<Float>(cubeSize);
+  byteArraySorter = new ArrayShuffler<Byte>(cubeSize);
+  floatArraySorter = new ArrayShuffler<Float>(cubeSize);
   
   spectrum = new float[bandsToDisplay];
   smoothSpectrum = new float[bandsToDisplay];

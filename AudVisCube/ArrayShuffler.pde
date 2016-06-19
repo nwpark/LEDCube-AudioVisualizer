@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class CubeArraySorter<ArrayType>
+public class ArrayShuffler<ArrayType>
 {
   private int cubeSize;
   private int nextSmallestDistance;
@@ -8,7 +8,7 @@ public class CubeArraySorter<ArrayType>
   private float[] twoDPyramidArray;
   
   // constructor
-  public CubeArraySorter(int requiredCubeSize)
+  public ArrayShuffler(int requiredCubeSize)
   {
     cubeSize = requiredCubeSize;
     nextSmallestDistance = (int)(cubeSize/2);
@@ -24,7 +24,7 @@ public class CubeArraySorter<ArrayType>
                                 +sq((y < 4) ? (3.5-y) : (y-3.5)))), false);
       } // for
     } // for
-  } // CubeArraySorter
+  } // ArrayShuffler
   
   public float[] twoDPyramidSort(float[] anArray)
   {
@@ -117,7 +117,7 @@ public class CubeArraySorter<ArrayType>
     return sortedArray;
   } // pyramidSort
   
-  public Float[] floatToFloatObject(float[] anArray)
+  public Float[] boxFloatArray(float[] anArray)
   {
     Float[] floatObjectArray = new Float[anArray.length];
     for(int i=0; i < anArray.length; i++)
@@ -126,7 +126,7 @@ public class CubeArraySorter<ArrayType>
     return floatObjectArray;
   } // floatToFloatObject
   
-  public float[] floatObjectToFloat(Float[] anArray)
+  public float[] unboxFloatArray(Float[] anArray)
   {
     float[] floatArray = new float[anArray.length];
     for(int i=0; i < anArray.length; i++)
@@ -135,34 +135,4 @@ public class CubeArraySorter<ArrayType>
     return floatArray;
   } // floatToFloatObject
   
-  //public float[] pyramidSort(float[] sortedArray)
-  //{
-  //  float[] pyramidArray = new float[sortedArray.length];
-  //  int index = 0;
-  //  while(index <= (sortedArray.length-1) / 2)
-  //  {
-  //    pyramidArray[index] = sortedArray[index*2];
-  //    if((sortedArray.length-1) - index != index)
-  //      pyramidArray[(sortedArray.length-1) - index] = sortedArray[index*2 + 1];
-  //    index++;
-  //  } // while
-    
-  //  return pyramidArray;
-  //} // pyramidSort
-  
-  //public ArrayType[] pyramidSort(ArrayType[] sortedArray, int maxIndex)
-  //{
-  //  Object[] pyramidArray = new Object[maxIndex + 1];
-  //  int index = 0;
-  //  while(index <= maxIndex / 2)
-  //  {
-  //    pyramidArray[index] = sortedArray[index*2];
-  //    if(maxIndex - index != index)
-  //      pyramidArray[maxIndex - index] = sortedArray[index*2 + 1];
-  //    index++;
-  //  } // while
-    
-  //  return (ArrayType[])pyramidArray;
-  //} // pyramidSort
-  
-} // class CubeArraySorter
+} // class ArrayShuffler

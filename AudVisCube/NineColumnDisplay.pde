@@ -2,7 +2,7 @@ public class NineColumnDisplay
 {
   private FFT fft;
   
-  private CubeArraySorter<Float> arraySorter;
+  private ArrayShuffler<Float> arraySorter;
   
   private float[] spectrum, smoothSpectrum;
   private byte[][] displayArray;
@@ -14,7 +14,7 @@ public class NineColumnDisplay
   {
     fft = requiredFFT;
     
-    arraySorter = new CubeArraySorter<Float>(8);
+    arraySorter = new ArrayShuffler<Float>(8);
     
     columns = new Column[9];
     columns[0] = new Column(2, new Pair<Integer, Integer>(0, 0));
@@ -38,9 +38,9 @@ public class NineColumnDisplay
   {
     fft.analyze(spectrum);
     
-    Float[] spectrumAsFloat = arraySorter.floatToFloatObject(sort(spectrum));
+    Float[] spectrumAsFloat = arraySorter.boxFloatArray(sort(spectrum));
     spectrum
-      = arraySorter.floatObjectToFloat(arraySorter.pyramidSort(spectrumAsFloat));
+      = arraySorter.unboxFloatArray(arraySorter.pyramidSort(spectrumAsFloat));
     
     for(int i = 0; i < 9; i++)
     {
