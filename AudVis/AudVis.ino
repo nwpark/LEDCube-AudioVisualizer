@@ -14,7 +14,7 @@ void setup()
 
 void loop()
 {
-  cube.wait(10);
+  cube.wait(20);
 
   // request an update
   Serial.println('R');
@@ -24,14 +24,16 @@ void loop()
 void serialEvent()
 {
   Serial.readBytes(inBuffer, sizeof(inBuffer));
-  
+  cube.writeCube();
   if(inBuffer != NULL)
   {
-    cube.clearAll();
+    //cube.clearAll();
     int i=-1;
     for(int x=0; x < 8; x++)
+    {
       for(int y=0; y < 8; y++, i++)
       {
+        cube.clearColumn(x, y);
         if(inBuffer[i] > 8)
           inBuffer[i] = 8;
         int height = inBuffer[i];
@@ -41,5 +43,6 @@ void serialEvent()
           height--;
         }
       }
+    }
   }
 }
