@@ -96,6 +96,21 @@ public class CubeArraySorter<ArrayType>
   //  } // if
   //} // insertAtSmallest
   
+  public float[] pyramidSort(float[] sortedArray)
+  {
+    float[] pyramidArray = new float[sortedArray.length];
+    int index = 0;
+    while(index <= (sortedArray.length-1) / 2)
+    {
+      pyramidArray[index] = sortedArray[index*2];
+      if((sortedArray.length-1) - index != index)
+        pyramidArray[(sortedArray.length-1) - index] = sortedArray[index*2 + 1];
+      index++;
+    } // while
+    
+    return pyramidArray;
+  } // pyramidSort
+  
   public ArrayType[] pyramidSort(ArrayType[] sortedArray, int maxIndex)
   {
     Object[] pyramidArray = new Object[maxIndex + 1];

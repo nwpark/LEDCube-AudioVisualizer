@@ -13,6 +13,8 @@ private static CubeArraySorter<Float> floatArraySorter;
 private static float[] spectrum, smoothSpectrum;
 private static byte[] outputArray;
 
+private static NineColumnDisplay nineColumnDisplay;
+
 private static final int cubeSize = 8;
 private static final int bandsToAnalyse = 128;
 private static final int bandsToDisplay = 64;
@@ -49,29 +51,33 @@ void setup()
   fft = new FFT(this, bandsToAnalyse);
   fft.input(song);
   song.play();
+  
+  nineColumnDisplay = new NineColumnDisplay(fft);
 }
 
 void draw()
 {
-  fadeBands();
+  //fadeBands();
 
-  fft.analyze();
+  //fft.analyze();
   
-  for(int i=0; i < 16; i++)
-  {
-    for(int j=i*4; j < (i+1)*4; j++)
-      spectrum[j] = fft.spectrum[i];
-  }
+  //for(int i=0; i < 16; i++)
+  //{
+  //  for(int j=i*4; j < (i+1)*4; j++)
+  //    spectrum[j] = fft.spectrum[i];
+  //}
 
-  spectrum = floatArraySorter.twoDPyramidSort(sort(spectrum));
+  //spectrum = floatArraySorter.twoDPyramidSort(sort(spectrum));
   
-  for(int i = 0; i < bandsToDisplay; i++)
-  {
-    smoothSpectrum[i] += (spectrum[i] - smoothSpectrum[i]) * smoothFactor;
-    outputArray[i] = (byte)map(smoothSpectrum[i]*height*6, 0, height, 0, 7);
-    //rect(i*rWidth, height, rWidth, -outputArray[i]*height/7);
-    rect(i*rWidth, height, rWidth, -smoothSpectrum[i]*height*5);
-  }
+  //for(int i = 0; i < bandsToDisplay; i++)
+  //{
+  //  smoothSpectrum[i] += (spectrum[i] - smoothSpectrum[i]) * smoothFactor;
+  //  outputArray[i] = (byte)map(smoothSpectrum[i]*height*6, 0, height, 0, 7);
+  //  //rect(i*rWidth, height, rWidth, -outputArray[i]*height/7);
+  //  rect(i*rWidth, height, rWidth, -smoothSpectrum[i]*height*5);
+  //}
+  
+  nineColumnDisplay.update();
 }
 
 void serialEvent(Serial arduinoPort)
@@ -80,7 +86,8 @@ void serialEvent(Serial arduinoPort)
   
   if(trim(val) != null)
   {
-    arduinoPort.write(outputArray);
+    //arduinoPort.write(outputArray);
+    arduinoPort.write(nineColumnDisplay.output());
   }
 }
 
