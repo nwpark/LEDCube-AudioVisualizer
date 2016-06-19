@@ -15,7 +15,7 @@ public class Column
     columnHeight = 0;
   } // Column
   
-  public void updateDisplay(NineColumnDisplay columnDisplay)
+  public void updateDisplay(ColumnDisplay columnDisplay)
   {
     for(Pair<Integer, Integer> columnPosition : columnPositions)
     {

@@ -7,20 +7,24 @@ private static FFT fft;
 
 private static Serial arduinoPort = null;
 
-private static ArrayShuffler<Byte> byteArraySorter;
-private static ArrayShuffler<Float> floatArraySorter;
+private static ArrayShuffler<Float> floatArrayShuffler;
 
 private static float[] spectrum, smoothSpectrum;
 private static byte[] outputArray;
 
-private static NineColumnDisplay nineColumnDisplay;
+private static ColumnDisplay nineColumnDisplay;
+private static ColumnDisplay fourColumnDisplay;
+private static ColumnDisplay sixtyfourColumnDisplay;
 
 private static final int cubeSize = 8;
 private static final int bandsToAnalyse = 128;
 private static final int bandsToDisplay = 64;
 private static final float smoothFactor = 0.2;
 private static float rWidth;
- 
+
+private enum State { COLUMNS4, COLUMNS9, COLUMNS64 }
+private static State currentState;
+
 void setup()
 {
   size(640, 360);
@@ -36,8 +40,7 @@ void setup()
   catch(NullPointerException e)
     { println("Failed to open serial port"); }
   
-  byteArraySorter = new ArrayShuffler<Byte>(cubeSize);
-  floatArraySorter = new ArrayShuffler<Float>(cubeSize);
+  floatArrayShuffler = new ArrayShuffler<Float>(cubeSize);
   
   spectrum = new float[bandsToDisplay];
   smoothSpectrum = new float[bandsToDisplay];
@@ -52,7 +55,11 @@ void setup()
   fft.input(song);
   song.play();
   
-  nineColumnDisplay = new NineColumnDisplay(fft);
+  init64ColumnDisplay();
+  init9ColumnDisplay();
+  init4ColumnDisplay();
+  
+  currentState = State.COLUMNS4;
 }
 
 void draw()
@@ -67,7 +74,7 @@ void draw()
   //    spectrum[j] = fft.spectrum[i];
   //}
 
-  //spectrum = floatArraySorter.twoDPyramidSort(sort(spectrum));
+  //spectrum = floatArrayShuffler.twoDPyramidSort(sort(spectrum));
   
   //for(int i = 0; i < bandsToDisplay; i++)
   //{
@@ -76,8 +83,18 @@ void draw()
   //  //rect(i*rWidth, height, rWidth, -outputArray[i]*height/7);
   //  rect(i*rWidth, height, rWidth, -smoothSpectrum[i]*height*5);
   //}
-  
-  nineColumnDisplay.update();
+  switch(currentState)
+  {
+    case COLUMNS4 :
+      fourColumnDisplay.update();
+      break;
+    case COLUMNS9 :
+      nineColumnDisplay.update();
+      break;
+    case COLUMNS64 :
+      sixtyfourColumnDisplay.update();
+      break;
+  }
 }
 
 void serialEvent(Serial arduinoPort)
@@ -86,9 +103,55 @@ void serialEvent(Serial arduinoPort)
   
   if(trim(val) != null)
   {
-    //arduinoPort.write(outputArray);
-    arduinoPort.write(nineColumnDisplay.output());
+    //arduinoPort.write(fourColumnDisplay.output());
+    switch(currentState)
+    {
+      case COLUMNS4 :
+        arduinoPort.write(fourColumnDisplay.output());
+        break;
+      case COLUMNS9 :
+        arduinoPort.write(nineColumnDisplay.output());
+        break;
+      case COLUMNS64 :
+        arduinoPort.write(sixtyfourColumnDisplay.output());
+        break;
+    }
   }
+}
+
+private void init64ColumnDisplay()
+{
+  Column[] columns = new Column[64];
+  int i=0;
+  for(int x=0; x < 8; x++)
+    for(int y=0; y < 8; y++, i++)
+      columns[i] = new Column(1, new Pair<Integer, Integer>(x, y));
+  sixtyfourColumnDisplay = new ColumnDisplay(64, columns, fft);
+}
+
+private void init9ColumnDisplay()
+{
+  Column[] columns = new Column[9];
+  columns[0] = new Column(2, new Pair<Integer, Integer>(0, 0));
+  columns[1] = new Column(2, new Pair<Integer, Integer>(0, 3));
+  columns[2] = new Column(2, new Pair<Integer, Integer>(0, 6));
+  columns[3] = new Column(2, new Pair<Integer, Integer>(3, 0));
+  columns[4] = new Column(2, new Pair<Integer, Integer>(3, 3));
+  columns[5] = new Column(2, new Pair<Integer, Integer>(3, 6));
+  columns[6] = new Column(2, new Pair<Integer, Integer>(6, 0));
+  columns[7] = new Column(2, new Pair<Integer, Integer>(6, 3));
+  columns[8] = new Column(2, new Pair<Integer, Integer>(6, 6));
+  nineColumnDisplay = new ColumnDisplay(9, columns, fft);
+}
+
+private void init4ColumnDisplay()
+{
+  Column[] columns = new Column[4];
+  columns[0] = new Column(3, new Pair<Integer, Integer>(0, 0));
+  columns[1] = new Column(3, new Pair<Integer, Integer>(0, 5));
+  columns[2] = new Column(3, new Pair<Integer, Integer>(5, 0));
+  columns[3] = new Column(3, new Pair<Integer, Integer>(5, 5));
+  fourColumnDisplay = new ColumnDisplay(4, columns, fft);
 }
 
 private void fadeBands()

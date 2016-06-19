@@ -5,7 +5,7 @@ public class ArrayShuffler<ArrayType>
   private int cubeSize;
   private int nextSmallestDistance;
   private Pair<Integer, Boolean>[][] distFromCenter;
-  private float[] twoDPyramidArray;
+  //private float[] twoDPyramidArray;
   
   // constructor
   public ArrayShuffler(int requiredCubeSize)
@@ -26,60 +26,24 @@ public class ArrayShuffler<ArrayType>
     } // for
   } // ArrayShuffler
   
-  public float[] twoDPyramidSort(float[] anArray)
-  {
-    // reset the booleans in distance array
-    for(int x=0; x < 8; x++)
-      for(int y=0; y < 8; y++)
-        distFromCenter[x][y].second = false;
-        
-    twoDPyramidArray = new float[(int)sq(cubeSize)];
-    
-    for(int i=0; i < twoDPyramidArray.length; i++)
-      insertAtSmallest(anArray[i]);
-      
-    nextSmallestDistance = (int)(cubeSize/2);
-      
-    return twoDPyramidArray;
-  } // twoDPyramidSort
-  
-  private void insertAtSmallest(float noToInsert)
-  {
-    if(nextSmallestDistance >= 0)
-    {
-      int i=0;
-      for(int x=0; x < 8; x++)
-        for(int y=0; y < 8; y++, i++)
-          if(distFromCenter[x][y].first == nextSmallestDistance
-             && !distFromCenter[x][y].second)
-          {
-            twoDPyramidArray[i] = noToInsert;
-            distFromCenter[x][y].second = true;
-            return;
-          } // if
-      nextSmallestDistance--;
-      insertAtSmallest(noToInsert);
-    } // if
-  } // insertAtSmallest
-  
-  //public ArrayType[] twoDPyramidSort(ArrayType[] anArray)
+  //public float[] twoDPyramidSort(float[] anArray)
   //{
   //  // reset the booleans in distance array
   //  for(int x=0; x < 8; x++)
   //    for(int y=0; y < 8; y++)
   //      distFromCenter[x][y].second = false;
         
-  //  twoDPyramidArray = new Object[(int)sq(cubeSize)];
-
+  //  twoDPyramidArray = new float[(int)sq(cubeSize)];
+    
   //  for(int i=0; i < twoDPyramidArray.length; i++)
   //    insertAtSmallest(anArray[i]);
-
+      
   //  nextSmallestDistance = (int)(cubeSize/2);
-
-  //  return (ArrayType[])twoDPyramidArray;
+      
+  //  return twoDPyramidArray;
   //} // twoDPyramidSort
   
-  //private void insertAtSmallest(ArrayType objectToInsert)
+  //private void insertAtSmallest(float noToInsert)
   //{
   //  if(nextSmallestDistance >= 0)
   //  {
@@ -89,14 +53,54 @@ public class ArrayShuffler<ArrayType>
   //        if(distFromCenter[x][y].first == nextSmallestDistance
   //           && !distFromCenter[x][y].second)
   //        {
-  //          twoDPyramidArray[i] = objectToInsert;
+  //          twoDPyramidArray[i] = noToInsert;
   //          distFromCenter[x][y].second = true;
   //          return;
   //        } // if
   //    nextSmallestDistance--;
-  //    insertAtSmallest(objectToInsert);
+  //    insertAtSmallest(noToInsert);
   //  } // if
   //} // insertAtSmallest
+  
+  /////////////////////////////////////////////////////////////////////////////////
+  private ArrayList<ArrayType> twoDPyramidArray;
+  
+  public ArrayType[] twoDPyramidSort(ArrayType[] sortedArray)
+  {
+    // reset the booleans in distance array
+    for(int x=0; x < 8; x++)
+      for(int y=0; y < 8; y++)
+        distFromCenter[x][y].second = false;
+        
+    twoDPyramidArray = new ArrayList<ArrayType>(Arrays.asList(sortedArray));
+
+    for(int i=0; i < sortedArray.length; i++)
+      insertAtSmallest(sortedArray[i]);
+
+    nextSmallestDistance = (int)(cubeSize/2);
+
+    return twoDPyramidArray.toArray(sortedArray);
+  } // twoDPyramidSort
+  
+  private void insertAtSmallest(ArrayType objectToInsert)
+  {
+    if(nextSmallestDistance >= 0)
+    {
+      int i=0;
+      for(int x=0; x < 8; x++)
+        for(int y=0; y < 8; y++, i++)
+          if(distFromCenter[x][y].first == nextSmallestDistance
+             && !distFromCenter[x][y].second)
+          {
+            twoDPyramidArray.add(i, objectToInsert);
+            distFromCenter[x][y].second = true;
+            return;
+          } // if
+      nextSmallestDistance--;
+      insertAtSmallest(objectToInsert);
+    } // if
+  } // insertAtSmallest
+  /////////////////////////////////////////////////////////////////////////////////
   
   public <ArrayType> ArrayType[] pyramidSort(ArrayType[] sortedArray)
   {
