@@ -20,7 +20,7 @@ void loop()
   Serial.println('R');
 }
 
-// process the update - method called when there is serial input
+// process an update - method called when there is serial input
 void serialEvent()
 {
   Serial.readBytes(inBuffer, sizeof(inBuffer));
@@ -32,15 +32,14 @@ void serialEvent()
     for(int x=0; x < 8; x++)
       for(int y=0; y < 8; y++, i++)
       {
-        if(inBuffer[i] > 7)
-          inBuffer[i] = 7;
+        if(inBuffer[i] > 8)
+          inBuffer[i] = 8;
         int height = inBuffer[i];
-        if(height > 0)
-          while(height >= 0)
-          {
-            cube.light(x, y, height);
-            height--;
-          }
+        while(height > 0)
+        {
+          cube.light(x, y, height-1);
+          height--;
+        }
       }
   }
 }

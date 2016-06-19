@@ -38,15 +38,16 @@ public class NineColumnDisplay
   {
     fft.analyze(spectrum);
     
+    Float[] spectrumAsFloat = arraySorter.floatToFloatObject(sort(spectrum));
+    spectrum
+      = arraySorter.floatObjectToFloat(arraySorter.pyramidSort(spectrumAsFloat));
+    
     for(int i = 0; i < 9; i++)
     {
       smoothSpectrum[i] += (spectrum[i] - smoothSpectrum[i]) * smoothFactor;
-      smoothSpectrum = arraySorter.pyramidSort(sort(smoothSpectrum));
       columns[i].columnHeight
-        = (byte)map(smoothSpectrum[i]*height*6, 0, height, 0, 7);
+        = (byte)map(smoothSpectrum[i]*height*8, 0, height, 0, 7);
       columns[i].updateDisplay(this);
-      
-      //outputArray[i] = (byte)map(smoothSpectrum[i]*height*6, 0, height, 0, 7);
     } // for
   } // update
   
@@ -55,7 +56,7 @@ public class NineColumnDisplay
     int i=0;
     for(int x=0; x < 8; x++)
       for(int y=0; y < 8; y++, i++)
-        outputArray[i] = displayArray[x][y];
+        outputArray[i] = displayArray[y][x];
     
     return outputArray;
   }
