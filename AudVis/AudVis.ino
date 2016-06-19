@@ -14,8 +14,8 @@ void setup()
 
 void loop()
 {
+  cube.light(1, 1, 1);
   cube.wait(20);
-
   // request an update
   Serial.println('R');
 }
@@ -24,7 +24,7 @@ void loop()
 void serialEvent()
 {
   Serial.readBytes(inBuffer, sizeof(inBuffer));
-  cube.writeCube();
+  //cube.writeCube();
   if(inBuffer != NULL)
   {
     //cube.clearAll();

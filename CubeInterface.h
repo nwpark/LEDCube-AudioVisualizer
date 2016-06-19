@@ -6,14 +6,14 @@
 class CubeInterface
 {
   public:
-    CubeInterface(int requiredDelay);
+    CubeInterface(byte requiredDelay);
     ~CubeInterface();
-    void light(int x, int y, int z);
-    void off(int x, int y, int z);
+    void light(byte x, byte y, byte z);
+    void off(byte x, byte y, byte z);
     void clearAll();
     void clearColumn(byte x, byte y);
     void writeCube();
-    void wait(int t);
+    void wait(byte t);
     void copyArray();
   private:
     void highBit();

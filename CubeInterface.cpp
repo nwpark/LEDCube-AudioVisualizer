@@ -99,14 +99,13 @@ void CubeInterface::writeCube()
   } // for
 
   for(byte i = 0; i < 64; i++)
-    if(oldStatus[ANODE_PINS[i][0]]
+    if(ledStatus[ANODE_PINS[i][0]]
                 [ANODE_PINS[i][1]]
                 [currentLayer] == HIGH)
       highBit();
     else
       lowBit();
 
-  // top 2 layers aint work :(
   if(currentLayer < 7)
     currentLayer++;
   else
@@ -119,29 +118,7 @@ void CubeInterface::wait(byte t)
 {
   while(t >= 0)
   {
-    for(byte i = 0; i < 8; i++)
-    {
-      if(CATHODE_PINS[i] == currentLayer)
-        highBit();
-      else
-        lowBit();
-    } // for
-
-    for(byte i = 0; i < 64; i++)
-      if(ledStatus[ANODE_PINS[i][0]]
-                  [ANODE_PINS[i][1]]
-                  [currentLayer] == HIGH)
-        highBit();
-      else
-        lowBit();
-
-    // top 2 layers aint work :(
-    if(currentLayer < 7)
-      currentLayer++;
-    else
-      currentLayer = 0;
-
-    latch();
+    writeCube();
     delayMicroseconds(10);
     t-=2;
   } // while
