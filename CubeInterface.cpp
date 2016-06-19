@@ -13,24 +13,23 @@ const byte ANODE_PINS[64][2] =
 const byte CATHODE_PINS[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
 boolean ledStatus[8][8][8];
-boolean oldStatus[8][8][8];
-int currentLayer = 0;
-int cubeDelay;
+byte currentLayer = 0;
+byte cubeDelay;
 
-const int CLEAR_PIN = 12;
-const int CLOCK_PIN = 11;
-const int LATCH_PIN = 10;
-const int BLANK_PIN = 9;
-const int DATA_PIN = 8;
+const byte CLEAR_PIN = 12;
+const byte CLOCK_PIN = 11;
+const byte LATCH_PIN = 10;
+const byte BLANK_PIN = 9;
+const byte DATA_PIN = 8;
 
 // constructor
-CubeInterface::CubeInterface(int requiredDelay)
+CubeInterface::CubeInterface(byte requiredDelay)
 {
   cubeDelay = requiredDelay;
 
-  for(int x = 0; x < 8; x++)
-    for(int y = 0; y < 8; y++)
-      for(int z = 0; z < 8; z++)
+  for(byte x = 0; x < 8; x++)
+    for(byte y = 0; y < 8; y++)
+      for(byte z = 0; z < 8; z++)
         ledStatus[x][y][z] = LOW;
 
   pinMode(CLEAR_PIN, OUTPUT);
@@ -40,28 +39,34 @@ CubeInterface::CubeInterface(int requiredDelay)
   pinMode(DATA_PIN, OUTPUT);
   digitalWrite(CLEAR_PIN, HIGH);
   digitalWrite(BLANK_PIN, LOW);
-}
+} // CubeInterface
 
 // destructor
 CubeInterface::~CubeInterface(){}
 
-void CubeInterface::light(int x, int y, int z)
+void CubeInterface::light(byte x, byte y, byte z)
 {
   ledStatus[x][y][z] = HIGH;
-}
+} // light
 
-void CubeInterface::off(int x, int y, int z)
+void CubeInterface::off(byte x, byte y, byte z)
 {
   ledStatus[x][y][z] = LOW;
-}
+} // off
 
 void CubeInterface::clearAll()
 {
-  for(int x = 0; x < 8; x++)
-    for(int y = 0; y < 8; y++)
-      for(int z = 0; z < 8; z++)
+  for(byte x = 0; x < 8; x++)
+    for(byte y = 0; y < 8; y++)
+      for(byte z = 0; z < 8; z++)
         ledStatus[x][y][z] = LOW;
-}
+} // clearAll
+
+void CubeInterface::clearColumn(byte x, byte y)
+{
+  for(byte z=0; z < 8; z++)
+    ledStatus[x][y][z] = LOW;
+} // clearColumn
 
 void CubeInterface::highBit()
 {
@@ -69,83 +74,52 @@ void CubeInterface::highBit()
   digitalWrite(CLOCK_PIN, HIGH);
   digitalWrite(CLOCK_PIN, LOW);
   digitalWrite(DATA_PIN, LOW);
-}
+} // highBit
 
 void CubeInterface::lowBit()
 {
   digitalWrite(CLOCK_PIN, HIGH);
   digitalWrite(CLOCK_PIN, LOW);
-}
+} // lowBit
 
 void CubeInterface::latch()
 {
   digitalWrite(LATCH_PIN, HIGH);
   digitalWrite(LATCH_PIN, LOW);
-}
+} // latch
 
 void CubeInterface::writeCube()
 {
-  for(int i = 0; i < 8; i++)
+  for(byte i = 0; i < 8; i++)
   {
     if(CATHODE_PINS[i] == currentLayer)
       highBit();
     else
       lowBit();
-  }
+  } // for
 
-  for(int i = 0; i < 64; i++)
-    if(oldStatus[ANODE_PINS[i][0]]
+  for(byte i = 0; i < 64; i++)
+    if(ledStatus[ANODE_PINS[i][0]]
                 [ANODE_PINS[i][1]]
                 [currentLayer] == HIGH)
       highBit();
     else
       lowBit();
 
-  // top 2 layers aint work :(
   if(currentLayer < 7)
     currentLayer++;
   else
     currentLayer = 0;
 
   latch();
-}
+} // writeCube
 
-void CubeInterface::wait(int t)
+void CubeInterface::wait(byte t)
 {
-  while(t >= 0)
+  while(t > 0)
   {
-    for(int i = 0; i < 8; i++)
-    {
-      if(CATHODE_PINS[i] == currentLayer)
-        highBit();
-      else
-        lowBit();
-    }
-
-    for(int i = 0; i < 64; i++)
-      if(ledStatus[ANODE_PINS[i][0]]
-                  [ANODE_PINS[i][1]]
-                  [currentLayer] == HIGH)
-        highBit();
-      else
-        lowBit();
-
-    // top 2 layers aint work :(
-    if(currentLayer < 7)
-      currentLayer++;
-    else
-      currentLayer = 0;
-
-    latch();
+    writeCube();
     delayMicroseconds(10);
-    t-=2;
-  }
-}
-
-void CubeInterface::copyArray()
-{
-  for(int x=0; x < 8; x++)
-    for(int y=0; y < 8; y++)
-      for(int z=0; z < 8; z++)
-        oldStatus[x][y][z] = ledStatus[x][y][z];
-}
+    t--;
+  } // while
+} // wait
