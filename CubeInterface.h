@@ -14,7 +14,6 @@ class CubeInterface
     void clearColumn(byte x, byte y);
     void writeCube();
     void wait(byte t);
-    void copyArray();
   private:
     void highBit();
     void lowBit();

@@ -116,10 +116,10 @@ void CubeInterface::writeCube()
 
 void CubeInterface::wait(byte t)
 {
-  while(t >= 0)
+  while(t > 0)
   {
     writeCube();
     delayMicroseconds(10);
-    t-=2;
+    t--;
   } // while
 } // wait
