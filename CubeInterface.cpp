@@ -13,7 +13,7 @@ const byte ANODE_PINS[64][2] =
 const byte CATHODE_PINS[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
 boolean ledStatus[8][8][8];
-boolean oldStatus[8][8][8];
+boolean nextStatus[8][8][8];
 int currentLayer = 0;
 int cubeDelay;
 
@@ -63,6 +63,27 @@ void CubeInterface::clearAll()
         ledStatus[x][y][z] = LOW;
 }
 
+void CubeInterface::nextUpdate()
+{
+  nextStatus[x][y][z] = HIGH;
+}
+
+void CubeInterface::update()
+{
+  for(int x=0; x < 8; x++)
+    for(int y=0; y < 8; y++)
+      for(int z=0; z < 8; z++)
+        ledStatus[x][y][z] = nextStatus[x][y][z];
+}
+
+void CubeInterface::clearNextStatus()
+{
+  for(int x = 0; x < 8; x++)
+    for(int y = 0; y < 8; y++)
+      for(int z = 0; z < 8; z++)
+        ledStatus[x][y][z] = LOW;
+}
+
 void CubeInterface::highBit()
 {
   digitalWrite(DATA_PIN, HIGH);
@@ -101,7 +122,6 @@ void CubeInterface::writeCube()
     else
       lowBit();
 
-  // top 2 layers aint work :(
   if(currentLayer < 7)
     currentLayer++;
   else
@@ -140,12 +160,4 @@ void CubeInterface::wait(int t)
     delayMicroseconds(10);
     t-=2;
   }
-}
-
-void CubeInterface::copyArray()
-{
-  for(int x=0; x < 8; x++)
-    for(int y=0; y < 8; y++)
-      for(int z=0; z < 8; z++)
-        oldStatus[x][y][z] = ledStatus[x][y][z];
 }
