@@ -8,6 +8,8 @@ public class ColumnDisplay implements Display
   private byte[][] displayArray;
   private byte[] outputArray;
   
+  private static final float smoothFactor = 0.2;
+  
   private int noOfColumns;
   private Column[] columns;
   
@@ -54,6 +56,6 @@ public class ColumnDisplay implements Display
         outputArray[i] = displayArray[y][x];
     
     return outputArray;
-  }
+  } // output
   
 } // class ColumnDisplay
