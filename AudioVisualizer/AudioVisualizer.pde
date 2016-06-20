@@ -1,4 +1,5 @@
 import processing.sound.SoundFile;
+import processing.sound.Amplitude;
 import processing.sound.FFT;
 import processing.serial.*;
 
@@ -12,9 +13,8 @@ private static ArrayShuffler<Float> floatArrayShuffler;
 private static float[] spectrum, smoothSpectrum;
 private static byte[] outputArray;
 
-private static ColumnDisplay nineColumnDisplay;
-private static ColumnDisplay fourColumnDisplay;
-private static ColumnDisplay sixtyfourColumnDisplay;
+private static ColumnDisplay smallColumnDisplay, fourColumnDisplay,
+                             nineColumnDisplay, sixtyfourColumnDisplay;
 private static PyramidDisplay pyramidDisplay;
 private static DesktopDisplay desktopDisplay;
 
@@ -45,7 +45,7 @@ void setup()
   song = new SoundFile(this, "C:/Users/Nick/Downloads/music.mp3");
   song.cue(52);
   song.play();
- 
+  
   fft = new FFT(this, bandsToAnalyse);
   fft.input(song);
   song.play();
@@ -53,12 +53,14 @@ void setup()
   init64ColumnDisplay();
   init9ColumnDisplay();
   init4ColumnDisplay();
+  initSmallColumnDisplay();
   pyramidDisplay = new PyramidDisplay(fft);
   desktopDisplay = new DesktopDisplay(fft);
   
+  // smallColumnDisplay, fourColumnDisplay, nineColumnDisplay,
+  // sixtyfourColumnDisplay
   currentState = State.PYRAMID;
-  currentDisplay = fourColumnDisplay;
-  //currentDisplay = pyramidDisplay;
+  currentDisplay = smallColumnDisplay;
 } // setup
 
 void draw()
@@ -109,6 +111,16 @@ private void init4ColumnDisplay()
   columns[3] = new Column(3, new Pair<Integer, Integer>(5, 5));
   fourColumnDisplay = new ColumnDisplay(4, columns, fft);
 } // init4ColumnDisplay
+
+private void initSmallColumnDisplay()
+{
+  Column[] columns = new Column[4];
+  columns[0] = new Column(2, new Pair<Integer, Integer>(1, 1));
+  columns[1] = new Column(2, new Pair<Integer, Integer>(1, 5));
+  columns[2] = new Column(2, new Pair<Integer, Integer>(5, 1));
+  columns[3] = new Column(2, new Pair<Integer, Integer>(5, 5));
+  smallColumnDisplay = new ColumnDisplay(4, columns, fft);
+} // initSmallColumnDisplay
 
 void stop()
 {
