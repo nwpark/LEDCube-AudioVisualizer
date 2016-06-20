@@ -4,7 +4,6 @@ import processing.sound.FFT;
 import processing.serial.*;
 
 private static SoundFile song;
-private static Amplitude amplitude;
 private static FFT fft;
 
 private static Serial arduinoPort = null;
@@ -14,8 +13,8 @@ private static ArrayShuffler<Float> floatArrayShuffler;
 private static float[] spectrum, smoothSpectrum;
 private static byte[] outputArray;
 
-private static ColumnDisplay smallColumnDisplay, fourColumnDisplay, nineColumnDisplay,
-                             sixtyfourColumnDisplay;
+private static ColumnDisplay smallColumnDisplay, fourColumnDisplay,
+                             nineColumnDisplay, sixtyfourColumnDisplay;
 private static PyramidDisplay pyramidDisplay;
 private static DesktopDisplay desktopDisplay;
 
@@ -47,9 +46,6 @@ void setup()
   song.cue(52);
   song.play();
   
-  amplitude = new Amplitude(this);
-  amplitude.input(song);
-  
   fft = new FFT(this, bandsToAnalyse);
   fft.input(song);
   song.play();
@@ -61,7 +57,8 @@ void setup()
   pyramidDisplay = new PyramidDisplay(fft);
   desktopDisplay = new DesktopDisplay(fft);
   
-  // smallColumnDisplay, fourColumnDisplay, nineColumnDisplay, sixtyfourColumnDisplay
+  // smallColumnDisplay, fourColumnDisplay, nineColumnDisplay,
+  // sixtyfourColumnDisplay
   currentState = State.PYRAMID;
   currentDisplay = smallColumnDisplay;
 } // setup
@@ -122,7 +119,7 @@ private void initSmallColumnDisplay()
   columns[1] = new Column(2, new Pair<Integer, Integer>(1, 5));
   columns[2] = new Column(2, new Pair<Integer, Integer>(5, 1));
   columns[3] = new Column(2, new Pair<Integer, Integer>(5, 5));
-  smallColumnDisplay = new ColumnDisplay(4, columns, fft, amplitude);
+  smallColumnDisplay = new ColumnDisplay(4, columns, fft);
 } // initSmallColumnDisplay
 
 void stop()
