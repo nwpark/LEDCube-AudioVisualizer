@@ -4,6 +4,8 @@ public class ArrayShuffler<ArrayType>
 {
   private int cubeSize;
   private int nextSmallestDistance;
+  
+  private ArrayList<ArrayType> twoDPyramidArray;
   private Pair<Integer, Boolean>[][] distFromCenter;
   
   // constructor
@@ -25,7 +27,24 @@ public class ArrayShuffler<ArrayType>
     } // for
   } // ArrayShuffler
   
-  private ArrayList<ArrayType> twoDPyramidArray;
+  public <ArrayType> ArrayType[] pyramidSort(ArrayType[] sortedArray)
+  {
+    ArrayList<ArrayType> pyramidArray
+      = new ArrayList<ArrayType>(Arrays.asList(sortedArray));
+    int maxIndex = sortedArray.length - 1;
+    int index = 0;
+    while(index <= maxIndex / 2)
+    {
+      //pyramidArray[index] = sortedArray[index*2];
+      sortedArray[index] = pyramidArray.get(index*2);
+      if(maxIndex - index != index)
+        //pyramidArray[maxIndex - index] = sortedArray[index*2 + 1];
+        sortedArray[maxIndex - index] = pyramidArray.get(index*2 + 1);
+      index++;
+    } // while
+    
+    return sortedArray;
+  } // pyramidSort
   
   public ArrayType[] twoDPyramidSort(ArrayType[] sortedArray)
   {
@@ -62,25 +81,6 @@ public class ArrayShuffler<ArrayType>
       insertAtSmallest(objectToInsert);
     } // if
   } // insertAtSmallest
-  
-  public <ArrayType> ArrayType[] pyramidSort(ArrayType[] sortedArray)
-  {
-    ArrayList<ArrayType> pyramidArray
-      = new ArrayList<ArrayType>(Arrays.asList(sortedArray));
-    int maxIndex = sortedArray.length - 1;
-    int index = 0;
-    while(index <= maxIndex / 2)
-    {
-      //pyramidArray[index] = sortedArray[index*2];
-      sortedArray[index] = pyramidArray.get(index*2);
-      if(maxIndex - index != index)
-        //pyramidArray[maxIndex - index] = sortedArray[index*2 + 1];
-        sortedArray[maxIndex - index] = pyramidArray.get(index*2 + 1);
-      index++;
-    } // while
-    
-    return sortedArray;
-  } // pyramidSort
   
   public Float[] boxFloatArray(float[] anArray)
   {
