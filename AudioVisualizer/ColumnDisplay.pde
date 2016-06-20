@@ -1,6 +1,8 @@
 public class ColumnDisplay implements Display
 {
   private FFT fft;
+  private Amplitude amplitude = null;
+  private float smoothAmplitude = 0;
   
   private ArrayShuffler<Float> arrayShuffler;
   
@@ -9,6 +11,7 @@ public class ColumnDisplay implements Display
   private byte[] outputArray;
   
   private static final float smoothFactor = 0.2;
+  private int shuffleTimeout;
   
   private int noOfColumns;
   private Column[] columns;
@@ -31,6 +34,14 @@ public class ColumnDisplay implements Display
     outputArray = new byte[64];
   } // ColumnDisplay
   
+  public ColumnDisplay(int requiredNoOfColumns, Column[] requiredColumns,
+                       FFT requiredFFT, Amplitude requiredAmplitude)
+  {
+    this(requiredNoOfColumns, requiredColumns, requiredFFT);
+    amplitude = requiredAmplitude;
+    shuffleTimeout = millis();
+  } // ColumnDisplay
+  
   public void update()
   {
     fft.analyze(spectrum);
@@ -46,6 +57,18 @@ public class ColumnDisplay implements Display
         = (byte)map(smoothSpectrum[i]*height*8, 0, height, 0, 7);
       columns[i].updateDisplay(this);
     } // for
+    
+    if(amplitude != null)
+    {
+      smoothAmplitude += (amplitude.analyze() - smoothAmplitude) * 0.2;
+      if(smoothAmplitude < 0.1 && millis() >= shuffleTimeout)
+      {
+        //shuffle the column positions randomly
+        columns = arrayShuffler.randomize(columns);
+        
+        shuffleTimeout = millis() + 1000;
+      }
+    }
   } // update
   
   public byte[] output()
