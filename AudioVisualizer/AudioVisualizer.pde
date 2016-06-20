@@ -1,5 +1,4 @@
 import processing.sound.SoundFile;
-import processing.sound.Amplitude;
 import processing.sound.FFT;
 import processing.serial.*;
 
@@ -30,6 +29,7 @@ void setup()
   size(640, 360);
   background(255);
   
+  // open a connection to the arduino (serial port at index 1)
   try
   {
     arduinoPort = new Serial(this, Serial.list()[1], 250000);
@@ -42,14 +42,18 @@ void setup()
   
   floatArrayShuffler = new ArrayShuffler<Float>(cubeSize);
   
+  // start playing the song 52 seconds in
   song = new SoundFile(this, "C:/Users/Nick/Downloads/music.mp3");
   song.cue(52);
   song.play();
   
+  // create a Fast Fourier Transform and give it the current playing song
   fft = new FFT(this, bandsToAnalyse);
   fft.input(song);
+  // start playing song again because fft constructor breaks stuff >.<
   song.play();
   
+  // initialize all of the display modes
   init64ColumnDisplay();
   init9ColumnDisplay();
   init4ColumnDisplay();
@@ -57,22 +61,27 @@ void setup()
   pyramidDisplay = new PyramidDisplay(fft);
   desktopDisplay = new DesktopDisplay(fft);
   
+  // set initial display to show off
   // smallColumnDisplay, fourColumnDisplay, nineColumnDisplay,
   // sixtyfourColumnDisplay
-  currentState = State.PYRAMID;
-  currentDisplay = smallColumnDisplay;
+  currentState = State.COLUMNS4;
+  currentDisplay = fourColumnDisplay;
 } // setup
 
 void draw()
 {
+  // update the display showing on the computer
   desktopDisplay.update();
+  // update the display showing on the led cube
   currentDisplay.update();
 } // draw
 
+// this method is called every time serial input is detected
 void serialEvent(Serial arduinoPort)
 {
   String val = arduinoPort.readStringUntil('\n');
   
+  // check if arduino sent a request and send it the current output
   if(trim(val) != null)
     arduinoPort.write(currentDisplay.output());
 } // serialEvent

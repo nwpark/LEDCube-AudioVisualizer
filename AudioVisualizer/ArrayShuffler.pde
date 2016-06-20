@@ -12,9 +12,12 @@ public class ArrayShuffler<ArrayType>
   public ArrayShuffler(int requiredCubeSize)
   {
     cubeSize = requiredCubeSize;
+    
+    // used for twoDPyramidSort
     nextSmallestDistance = (int)(cubeSize/2);
     distFromCenter = new Pair[8][8];
     
+    // calculate this distance of each index from the centre of the cube
     for(int x=0; x < 8; x++)
     {
       for(int y=0; y < 8; y++)
@@ -27,6 +30,7 @@ public class ArrayShuffler<ArrayType>
     } // for
   } // ArrayShuffler
   
+  // reorder the given sorted array to have largest elements in the middle
   public <ArrayType> ArrayType[] pyramidSort(ArrayType[] sortedArray)
   {
     ArrayList<ArrayType> pyramidArray
@@ -46,6 +50,7 @@ public class ArrayShuffler<ArrayType>
     return sortedArray;
   } // pyramidSort
   
+  // randomize the indexes of the elements in a given array
   public <ArrayType> ArrayType[] randomize(ArrayType[] anArray)
   {
     int index = anArray.length, randomIndex;
@@ -64,6 +69,9 @@ public class ArrayShuffler<ArrayType>
     return anArray;
   } // randomize
   
+  // stupid algorithm.. why did i make this recursive?? :S
+  // reorders a sorted array to have the largest elements in the middle when
+  // viewed as a 2d array
   public ArrayType[] twoDPyramidSort(ArrayType[] sortedArray)
   {
     // reset the booleans in distance array
@@ -81,6 +89,7 @@ public class ArrayShuffler<ArrayType>
     return twoDPyramidArray.toArray(sortedArray);
   } // twoDPyramidSort
   
+  // helper method for twoDPyramidSort algorithm
   private void insertAtSmallest(ArrayType objectToInsert)
   {
     if(nextSmallestDistance >= 0)

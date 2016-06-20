@@ -44,11 +44,15 @@ public class ColumnDisplay implements Display
     //spectrum
     //  = arrayShuffler.unboxFloatArray(arrayShuffler.pyramidSort(spectrumAsFloat));
     
+    // update the height of each column
     for(int i = 0; i < noOfColumns; i++)
     {
+      // smooth out the rate at which each value in the spectrum changes
       smoothSpectrum[i] += (spectrum[i] - smoothSpectrum[i]) * smoothFactor;
+      // map the spectrum value to a value between 0 and 7 (height of cube)
       columns[i].columnHeight
         = (byte)map(smoothSpectrum[i]*height*8, 0, height, 0, 7);
+      // column objects update this dispayArray[][] based on their height
       columns[i].updateDisplay(this);
     } // for
     
