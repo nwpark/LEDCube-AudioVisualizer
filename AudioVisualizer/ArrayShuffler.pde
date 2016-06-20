@@ -46,6 +46,24 @@ public class ArrayShuffler<ArrayType>
     return sortedArray;
   } // pyramidSort
   
+  public <ArrayType> ArrayType[] randomize(ArrayType[] anArray)
+  {
+    int index = anArray.length, randomIndex;
+    ArrayType tempValue;
+    
+    while(index != 0)
+    {
+      randomIndex = (int)random(index);
+      index--;
+      
+      tempValue = anArray[index];
+      anArray[index] = anArray[randomIndex];
+      anArray[randomIndex] = tempValue;
+    } // while
+    
+    return anArray;
+  } // randomize
+  
   public ArrayType[] twoDPyramidSort(ArrayType[] sortedArray)
   {
     // reset the booleans in distance array
