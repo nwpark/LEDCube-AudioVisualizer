@@ -31,6 +31,7 @@ CubeInterface::CubeInterface(byte requiredDelay)
 {
   cubeDelay = requiredDelay;
 
+  // initialize all leds to be off
   for(byte x = 0; x < 8; x++)
     for(byte y = 0; y < 8; y++)
       for(byte z = 0; z < 8; z++)
@@ -54,6 +55,14 @@ void CubeInterface::light(byte x, byte y, byte z)
   ledStatus[x][y][z] = HIGH;
 } // light
 
+// turn a layer of leds on
+void CubeInterface::lightLayer(byte layer)
+{
+  for(int x=0; x < 8; x++)
+    for(int y=0; y < 8; y++)
+      ledStatus[x][y][layer] = HIGH;
+} // lightLayer
+
 // turn a specific led off
 void CubeInterface::off(byte x, byte y, byte z)
 {
@@ -68,6 +77,14 @@ void CubeInterface::clearAll()
       for(byte z = 0; z < 8; z++)
         ledStatus[x][y][z] = LOW;
 } // clearAll
+
+// turn a layer of leds off
+void CubeInterface::clearLayer(byte layer)
+{
+  for(int x=0; x < 8; x++)
+    for(int y=0; y < 8; y++)
+      ledStatus[x][y][layer] = LOW;
+} // clearLayer
 
 // turn all leds in a specific column off
 void CubeInterface::clearColumn(byte x, byte y)
@@ -133,7 +150,7 @@ void CubeInterface::writeCube()
 
 // allow for delays in the code by updating the cube every 10 microseconds
 // rather than completely pausing the program.
-void CubeInterface::wait(byte t)
+void CubeInterface::wait(int t)
 {
   while(t > 0)
   {

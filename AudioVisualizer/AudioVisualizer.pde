@@ -65,7 +65,7 @@ void setup()
   // smallColumnDisplay, fourColumnDisplay, nineColumnDisplay,
   // sixtyfourColumnDisplay
   currentState = State.COLUMNS4;
-  currentDisplay = fourColumnDisplay;
+  currentDisplay = nineColumnDisplay;
 } // setup
 
 void draw()
